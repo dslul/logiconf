@@ -1,0 +1,85 @@
+FLASH: page 0x00 off 0x00:  00 01 01 00 ff ff 00 00 ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0x10:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0x20:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0x30:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0x40:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0x50:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0x60:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0x70:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0x80:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0x90:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0xa0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0xb0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0xc0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0xd0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0xe0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x00 off 0xf0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x01 off 0x00:  04 02 00 40 01 90 01 40 06 80 0c 10 0e ff ff ff
+FLASH: page 0x01 off 0x10:  ff 00 1b 00 ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x01 off 0x20:  80 01 00 01 80 01 00 02 80 01 00 04 80 01 00 08
+FLASH: page 0x01 off 0x30:  80 01 00 10 90 07 ff ff 90 04 ff ff 90 03 ff ff
+FLASH: page 0x01 off 0x40:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x01 off 0x50:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x01 off 0x60:  80 01 00 01 80 01 00 02 80 01 00 04 80 01 00 08
+FLASH: page 0x01 off 0x70:  80 01 00 10 90 07 ff ff 90 04 ff ff 90 03 ff ff
+FLASH: page 0x01 off 0x80:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x01 off 0x90:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x01 off 0xa0:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+FLASH: page 0x01 off 0xb0:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+FLASH: page 0x01 off 0xc0:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+FLASH: page 0x01 off 0xd0:  00 02 00 00 00 00 28 df 00 08 51 d3 00 08 59 d3
+FLASH: page 0x01 off 0xe0:  00 08 05 00 00 03 00 00 00 00 3c df 00 08 67 d3
+FLASH: page 0x01 off 0xf0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0x00:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0x10:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0x20:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0x30:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0x40:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0x50:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0x60:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0x70:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0x80:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0x90:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0xa0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0xb0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0xc0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0xd0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0xe0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+FLASH: page 0x02 off 0xf0:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+
+                                   
+ROM  : page 0x00 off 0x00:  01 01 01 ff ff ff 00 00 00 02 00 00 00 00 00 df
+ROM  : page 0x00 off 0x10:  00 08 e1 d2 00 08 15 d3 00 08 01 00 00 02 00 00
+ROM  : page 0x00 off 0x20:  00 00 14 df 00 08 25 d3 00 08 2d d3 00 08 03 00
+ROM  : page 0x00 off 0x30:  00 02 00 00 00 00 28 df 00 08 51 d3 00 08 59 d3
+ROM  : page 0x00 off 0x40:  00 08 05 00 00 03 00 00 00 00 3c df 00 08 67 d3
+ROM  : page 0x00 off 0x50:  00 08 93 d3 00 08 7d d3 00 08 c1 00 00 02 00 00
+ROM  : page 0x00 off 0x60:  00 00 54 df 00 08 e5 d3 00 08 1d d4 00 08 00 13
+ROM  : page 0x00 off 0x70:  00 08 00 00 00 00 68 df 00 08 e5 b3 00 08 ed b3
+ROM  : page 0x00 off 0x80:  00 08 25 b4 00 08 f1 b9 00 08 35 b4 00 08 d5 bb
+ROM  : page 0x00 off 0x90:  00 08 b9 b4 00 08 4d ba 00 08 01 18 60 02 00 00
+ROM  : page 0x00 off 0xa0:  00 00 94 df 00 08 51 56 00 08 ad 56 00 08 02 18
+ROM  : page 0x00 off 0xb0:  60 01 00 00 00 00 a8 df 00 08 63 d4 00 08 6d d4
+ROM  : page 0x00 off 0xc0:  00 08 71 d4 00 08 a1 18 60 03 00 00 00 00 c0 df
+ROM  : page 0x00 off 0xd0:  00 08 c1 57 00 08 cd 57 00 08 1d 58 00 08 00 1e
+ROM  : page 0x00 off 0xe0:  40 02 00 00 00 00 d8 df 00 08 75 d4 00 08 83 d4
+ROM  : page 0x00 off 0xf0:  00 08 b0 1e 60 03 00 00 00 00 ec df 00 08 99 d4
+ROM  : page 0x01 off 0x00:  01 02 00 a4 01 48 03 3c 06 78 0c 00 00 ff ff ff
+ROM  : page 0x01 off 0x10:  ff 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ROM  : page 0x01 off 0x20:  80 01 00 01 80 01 00 02 80 01 00 04 80 01 00 08
+ROM  : page 0x01 off 0x30:  80 01 00 10 90 07 ff ff 90 04 ff ff 90 03 ff ff
+ROM  : page 0x01 off 0x40:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ROM  : page 0x01 off 0x50:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ROM  : page 0x01 off 0x60:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ROM  : page 0x01 off 0x70:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ROM  : page 0x01 off 0x80:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ROM  : page 0x01 off 0x90:  ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ROM  : page 0x01 off 0xa0:  01 01 01 ff ff ff 00 00 00 02 00 00 00 00 00 df
+ROM  : page 0x01 off 0xb0:  00 08 e1 d2 00 08 15 d3 00 08 01 00 00 02 00 00
+ROM  : page 0x01 off 0xc0:  00 00 14 df 00 08 25 d3 00 08 2d d3 00 08 03 00
+ROM  : page 0x01 off 0xd0:  00 02 00 00 00 00 28 df 00 08 51 d3 00 08 59 d3
+ROM  : page 0x01 off 0xe0:  00 08 05 00 00 03 00 00 00 00 3c df 00 08 67 d3
+ROM  : page 0x01 off 0xf0:  00 08 93 d3 00 08 7d d3 00 08 c1 00 00 02 00 00
+ROM  : page 0x02 off 0x00:     HID++ error from the device (255): ERR_INVALID_ADDRESS (02)
+
+                                   

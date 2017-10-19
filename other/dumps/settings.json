@@ -1,0 +1,239 @@
+{
+  "Firmware" : 
+  {
+    "G402" : 
+    {
+      "Last_Check" : "2017-01-26"
+    }
+  },
+  "backlight" : 
+  {
+    "Logitech.Gaming.Mouse.G402" : 
+    {
+      "breathing" : 
+      {
+        "intensity" : 255,
+        "rate" : 533
+      },
+      "dpi" : 
+      {
+        "persistent" : false
+      },
+      "logo" : 
+      {
+        "breathing" : true,
+        "intensity" : 255
+      },
+      "sleepTimer" : 
+      {
+        "enabled" : true,
+        "minutes" : 1
+      }
+    }
+  },
+  "gameApplets" : 
+  {
+    "C:|Program Files|Logitech Gaming Software|ArxApplets|Assetto Corsa|AssettoCorsaArxApplet.exe" : 
+    {
+      "id" : "scan_from_known_folder",
+      "launch" : 
+      {
+        "profile_associated_but_game_not_found" : true,
+        "profile_guid" : "{9E6D8C2F-0983-4008-8EE3-EC5554C88CAF}",
+        "type" : "never"
+      },
+      "name" : "Assetto Corsa",
+      "support" : 
+      {
+        "arx" : 
+        {
+          "enabled" : true,
+          "support" : true
+        },
+        "led" : 
+        {
+          "enabled" : true,
+          "support" : true
+        }
+      }
+    },
+    "C:|Program Files|Logitech Gaming Software|ArxApplets|Counter Strike - GO|CS_GO_Arx_Applet.exe" : 
+    {
+      "id" : "scan_from_known_folder",
+      "launch" : 
+      {
+        "profile_associated_but_game_not_found" : true,
+        "profile_guid" : "{A2606DAA-7B0C-4CA6-B203-2E86E5BE3325}",
+        "type" : "never"
+      },
+      "name" : "Counter Strike - GO",
+      "support" : 
+      {
+        "arx" : 
+        {
+          "enabled" : true,
+          "support" : true
+        },
+        "led" : 
+        {
+          "enabled" : true,
+          "support" : true
+        }
+      }
+    },
+    "C:|Program Files|Logitech Gaming Software|ArxApplets|Dota 2|Dota2ArxApplet.exe" : 
+    {
+      "id" : "scan_from_known_folder",
+      "launch" : 
+      {
+        "profile_associated_but_game_not_found" : true,
+        "profile_guid" : "{306FB93B-96A8-43EB-9B5A-352D93EEE712}",
+        "type" : "never"
+      },
+      "name" : "Dota 2",
+      "support" : 
+      {
+        "arx" : 
+        {
+          "enabled" : true,
+          "support" : true
+        },
+        "led" : 
+        {
+          "enabled" : true,
+          "support" : true
+        }
+      }
+    }
+  },
+  "inputTracker" : 
+  {
+    "spectrum" : 2
+  },
+  "lcd" : 
+  {
+    "applets" : 
+    {
+      "86a9" : 
+      {
+        "appPath" : "C:/Program Files/Logitech Gaming Software/LCore.exe",
+        "autostartable" : false,
+        "format" : 0,
+        "iconPath" : "",
+        "name" : "Selettore profili serie G"
+      },
+      "9720" : 
+      {
+        "appPath" : "C:/Program Files/Logitech Gaming Software/LCore.exe",
+        "autostartable" : false,
+        "format" : 1,
+        "iconPath" : "",
+        "name" : "Selettore profili serie G"
+      },
+      "c872" : 
+      {
+        "appPath" : "C:/Program Files/Logitech Gaming Software/LCore.exe",
+        "autostartable" : false,
+        "format" : 0,
+        "iconPath" : "",
+        "name" : "Logitech Gaming Profiler"
+      },
+      "d9fb" : 
+      {
+        "appPath" : "C:/Program Files/Logitech Gaming Software/LCore.exe",
+        "autostartable" : false,
+        "format" : 1,
+        "iconPath" : "",
+        "name" : "Logitech Gaming Profiler"
+      }
+    }
+  },
+  "mainapp" : 
+  {
+    "autostart" : false
+  },
+  "mainwindow" : 
+  {
+    "ScanForGames" : true,
+    "dynamicImageDownload" : true,
+    "enableAppletDeviceView" : false,
+    "enableLEDSDK" : true,
+    "lastUsedDevice" : "Logitech.Gaming.Mouse.G402",
+    "useEnhancedGraphics" : false
+  },
+  "mobile" : 
+  {
+    "authentication" : null,
+    "delay" : 
+    {
+      "enabled" : false
+    },
+    "service" : 
+    {
+      "enabled" : true,
+      "no-new-paring-allowed" : false
+    },
+    "service_guid" : "{ae68dcfb-b735-4344-9d62-701d0ba9a493}"
+  },
+  "pointer" : 
+  {
+    "Logitech.Gaming.Mouse.G402" : 
+    {
+      "dpi" : 
+      {
+        "defaultIndex" : 2,
+        "shiftIndex" : 0,
+        "syncXY" : true,
+        "values" : 
+        [
+          {
+            "enabled" : true,
+            "x" : 400,
+            "y" : 400
+          },
+          {
+            "enabled" : true,
+            "x" : 800,
+            "y" : 800
+          },
+          {
+            "enabled" : true,
+            "x" : 1600,
+            "y" : 1600
+          },
+          {
+            "enabled" : true,
+            "x" : 3200,
+            "y" : 3200
+          }
+        ]
+      },
+      "hardwareMode" : true,
+      "powerMode" : 2,
+      "reportRate" : 1000
+    },
+    "hasAcceleration" : true
+  },
+  "profiler" : 
+  {
+    "defaultProfile" : "{09D92D75-3C8C-4723-B06C-4090BCB899C0}",
+    "enableQuickMacroDelays" : false,
+    "joystickMouseSpeed" : 127,
+    "persistentProfile" : "",
+    "profileCyclingCmd" : 0,
+    "showProfileActivationOnLCD" : true,
+    "showQuickMacrosOnLCD" : true,
+    "sp" : 
+    {
+      "hasMigrated" : true
+    }
+  },
+  "speedTest" : 
+  {
+    "Logitech.Gaming.Mouse.G402" : "AwPN/8ePIMcvfif3CE9uhuc6Mqb4g/kttumetJM9wHex0pz0tTHVZ6M66+BHJcf1YkJk0kplLCw7lhl39EnqQfoSM6mO4wl3KCmgcPX3ah6bwQJDW4VQIZF+O3gXvYCjiTRz8miQh+HpcUvtUk3PKM+PLSI="
+  },
+  "sync_effect_settings" : 
+  {
+    "settings" : null
+  }
+}

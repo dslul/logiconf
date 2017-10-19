@@ -1,0 +1,72 @@
+Logitech Gaming Mouse G402 (046d:c07e) is a HID++ 4.2 device
+Feature 0x01: [0x0001]  FeatureSet
+Feature 0x02: [0x0003]  FirmwareInfo
+Feature 0x03: [0x0005]  GetDeviceNameType
+Feature 0x04: [0x00c1]  DFUControl2
+Feature 0x05: [0x1300]  LEDControl
+Feature 0x06: [0x1801] hidden
+Feature 0x07: [0x1802] hidden
+Feature 0x08: [0x1850] hidden
+Feature 0x09: [0x18a1] hidden
+Feature 0x0a: [0x1e00] hidden
+Feature 0x0b: [0x1eb0] hidden
+Feature 0x0c: [0x2201]  AdjustableDPI
+Feature 0x0d: [0x2400]  HybridTracking
+Feature 0x0e: [0x8060]  ReportRate
+Feature 0x0f: [0x8100]  OnBoardProfiles
+Feature 0x10: [0x8110]  MouseButtonSpy
+
+Memory model:	1
+Profile format:	1
+Macro format:	1
+Profile count:	1
+Profile count OOB:	1
+Button count:	8
+Sector count:	3
+Sector size:	1024
+Mechanical layout:	0xa (G-shift, DPI shift)
+Various info:	0x1 (Corded)
+
+HID PACKETS
+
+NAME:
+    10ff031d000000
+    10ff031d100000
+    10ff031d200000
+last 16 bytes in ASCII
+
+FIRMWARE VERSION:
+    10ff021d000000
+
+DPI LIGHT ON:
+    10 ff 05 7d 00 02 00
+DPI LIGHT OFF:
+    10 ff 05 7d 00 04 00
+
+DPI READ CURRENT STATUS:
+    10ff056d000000
+    response: 11 ff 05 6d 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 (6th byte)
+
+
+G LOGO BLINK OFF:
+    11ff055d01008000ff0000000000000000000000
+G LOGO BLINK ON:
+    11ff055d01008000ff1e2d000000000000000000
+
+from 0215 (fastest blink, 533 in decimal) to 4e20 (slowest blink, 20k in decimal)
+
+
+10ff053d010000  <--- to apply G logo configs (hangs)
+10ff053d000000  <--- to stop  G logo configs
+
+change DPI:
+    10ff0fcb030000
+    from 00 to 04
+read current DPI:
+    10ff0fbb000000
+    returns from 00 to 04
+
+disable fusion engine:
+    10ff0d1d000000
+enable fusion engine:
+    10ff0d1d010000
