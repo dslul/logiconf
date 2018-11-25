@@ -16,14 +16,16 @@
  *
  */
 
-#ifndef HIDPP10_DEFS_H
-#define HIDPP10_DEFS_H
+#ifndef LIBHIDPP_HIDPP10_DEFS_H
+#define LIBHIDPP_HIDPP10_DEFS_H
 
 #include <cstdint>
 
 namespace HIDPP10
 {
 	enum SubID: uint8_t {
+		DeviceDisconnection = 0x40,
+		DeviceConnection = 0x41,
 		SendDataAcknowledgement = 0x50,
 		SetRegisterShort = 0x80,
 		GetRegisterShort = 0x81,

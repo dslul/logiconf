@@ -16,10 +16,12 @@
  *
  */
 
-#ifndef HIDPP20_DEVICE_H
-#define HIDPP20_DEVICE_H
+#ifndef LIBHIDPP_HIDPP20_DEVICE_H
+#define LIBHIDPP_HIDPP20_DEVICE_H
 
 #include <hidpp/Device.h>
+
+namespace HIDPP { class Dispatcher; }
 
 namespace HIDPP20 {
 
@@ -27,11 +29,20 @@ class Device: public HIDPP::Device
 {
 public:
 	static unsigned int softwareID;
-	Device (const std::string &path, HIDPP::DeviceIndex device_index = HIDPP::DefaultDevice);
+	Device (HIDPP::Dispatcher *dispatcher, HIDPP::DeviceIndex device_index = HIDPP::DefaultDevice);
+	Device (HIDPP::Device &&other);
 
 	std::vector<uint8_t> callFunction (uint8_t feature_index,
 					   unsigned int function,
-					   const std::vector<uint8_t> &params);
+					   std::vector<uint8_t>::const_iterator param_begin,
+					   std::vector<uint8_t>::const_iterator param_end);
+
+	inline std::vector<uint8_t> callFunction (uint8_t feature_index,
+						  unsigned int function,
+						  const std::vector<uint8_t> params = {})
+	{
+		return callFunction (feature_index, function, params.begin (), params.end ());
+	}
 };
 
 }

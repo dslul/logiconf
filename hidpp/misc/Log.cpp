@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Clément Vuchener
+ * Copyright 2016 Clément Vuchener
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,58 +16,159 @@
  *
  */
 
-#include <misc/Log.h>
+#include "Log.h"
 
+#include <iostream>
 #include <cstdarg>
 #include <cstdio>
+#include <cstring>
 
-Log::Level Log::_level = Log::Error;
-std::ofstream Log::_null_stream;
-
-void Log::setLevel (Log::Level level)
+Log::Category::Category (const char *tag, bool enabled_by_default):
+	_enabled (enabled_by_default),
+	_tag (tag)
 {
-	_level = level;
 }
 
-Log::Level Log::level ()
+void Log::Category::enable (bool enabled)
 {
-	return _level;
+	_enabled = enabled;
 }
 
-std::ostream &Log::stream (Log::Level level)
+void Log::Category::enable (const std::string &sub, bool enabled)
 {
-	if (level <= _level) {
-		std::cerr << "[" << levelTag (level) << "] ";
-		return std::cerr;
+	_sub_categories[sub] = enabled;
+}
+
+bool Log::Category::isEnabled (const std::string &sub) const
+{
+	if (!sub.empty ()) {
+		auto it = _sub_categories.find (sub);
+		if (it != _sub_categories.end ())
+			return it->second;
 	}
-	else
-		return _null_stream;
+	return _enabled;
 }
 
-void Log::printf (Level level, const char *format, ...)
+std::string Log::Category::tag (const std::string &sub) const
 {
-	if (level <= _level) {
-		std::string new_format = std::string ("[") + levelTag (level) + "] " + format;
-		va_list args;
-		va_start (args, format);
-		vprintf (new_format.c_str (), args);
-		va_end (args);
+	if (!sub.empty ())
+		return _tag + ':' + sub;
+	return _tag;
+}
+
+Log::Category Log::Error ("error", true);
+Log::Category Log::Warning ("warning");
+Log::Category Log::Info ("info");
+Log::Category Log::Debug ("debug");
+
+std::mutex Log::_mutex;
+
+Log::Log ():
+	_buf ("null")
+{
+}
+
+Log::Log (const std::string &prefix):
+	std::ostream (&_buf),
+	_buf (prefix)
+{
+}
+
+Log::Log (Log &&log):
+	std::ostream (std::move (log)),
+	_buf (std::move (log._buf))
+{
+}
+
+Log::~Log ()
+{
+}
+
+void Log::init (const char *setting_string)
+{
+	#define ADD_CATEGORY_BY_TAG(cat) { cat.tag (), &cat }
+	static std::map<std::string, Category *> categories_by_tag {
+		ADD_CATEGORY_BY_TAG (Log::Error),
+		ADD_CATEGORY_BY_TAG (Log::Warning),
+		ADD_CATEGORY_BY_TAG (Log::Info),
+		ADD_CATEGORY_BY_TAG (Log::Debug),
+	};
+	const char *current;
+	if (setting_string)
+		current = setting_string;
+	else if (!(current = getenv ("HIDPP_LOG")))
+		return;
+
+	// Enable verbose mode, if setting is present (even if empty).
+	Log::Warning.enable ();
+
+	const char *end = current + strlen (current);
+	while (current != end) {
+		bool enabling = true;
+		const char *next = std::find (current, end, ',');
+		const char *sub = std::find (current, next, ':');
+		if (*current == '-') {
+			enabling = false;
+			++current;
+		}
+		std::string tag (current, sub);
+		auto it = categories_by_tag.find (tag);
+		if (it == categories_by_tag.end ())
+			std::cerr << "Invalid log category tag: " << tag << std::endl;
+		else {
+			if (sub != next)
+				it->second->enable (std::string (sub+1, next), enabling);
+			else
+				it->second->enable (enabling);
+		}
+		if (next != end)
+			++next; // skip comma
+		current = next;
 	}
 }
 
-const char *Log::levelTag (Level level)
+Log Log::log (const Category *category, const char *sub)
 {
-	switch (level) {
-	case Error:
-		return "Error";
-	case Warning:
-		return "Warning";
-	case Info:
-		return "Info";
-	case Debug:
-		return "Debug";
-	case DebugReport:
-		return "Debug Report";
+	if (sub && category->isEnabled (sub))
+		return Log (category->tag (sub));
+	if (!sub && category->isEnabled ())
+		return Log (category->tag ());
+	return Log ();
+}
+
+void Log::printf (const char *format, ...)
+{
+	char *str, *current, *end;
+	int len;
+	if (!*this)
+		return;
+	va_list args, copy;
+	va_start (args, format);
+	va_copy (copy, args);
+	len = vsnprintf (nullptr, 0, format, copy);
+	str = new char[len+1];
+	vsnprintf (str, len+1, format, args);
+	current = str;
+	while (*current != '\0' && (end = strchr (current, '\n'))) {
+		*this << std::string (current, end) << std::endl;
+		current = end+1;
 	}
-	return "Invalid";
+	if (*current != '\0') {
+		*this << std::string (current);
+	}
+	delete[] str;
+	va_end (args);
+}
+
+Log::LogBuf::LogBuf (const std::string &prefix):
+	_prefix (prefix)
+{
+}
+
+int Log::LogBuf::sync ()
+{
+	std::unique_lock<std::mutex> lock (_mutex);
+	std::cerr << "[" << _prefix << "] " << str ();
+	str (std::string ());
+	return 0;
 }

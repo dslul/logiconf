@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef HIDPP_REPORT_H
-#define HIDPP_REPORT_H
+#ifndef LIBHIDPP_HIDPP_REPORT_H
+#define LIBHIDPP_HIDPP_REPORT_H
 
 #include <hidpp/defs.h>
 
@@ -26,6 +26,8 @@
 
 namespace HIDPP
 {
+
+bool checkReportDescriptor (const std::vector<uint8_t> &report_desc);
 
 /**
  * Contains a HID++ report.
@@ -90,7 +92,7 @@ public:
 	static constexpr std::size_t MaxDataLength = 19;
 
 	/**
-	 * Raw data constructor
+	 * Build the report by copying the raw data.
 	 *
 	 * \param report_id	Report ID
 	 * \param data		Raw report data
@@ -100,6 +102,16 @@ public:
 	 * \throws InvalidReportLength
 	 */
 	Report (uint8_t report_id, const uint8_t *data, std::size_t length);
+
+	/**
+	 * Build the report by moving the raw data.
+	 *
+	 * \param data	Report data including the report ID in its first byte.
+	 *
+	 * \throws InvalidReportID
+	 * \throws InvalidReportLength
+	 */
+	Report (std::vector<uint8_t> &&data);
 
 	/**
 	 * Access report type.
@@ -113,7 +125,7 @@ public:
 	/**
 	 * \name HID++ 1.0
 	 *
-	 * @{
+	 * \{
 	 */
 
 	/**
@@ -135,7 +147,8 @@ public:
 	Report (DeviceIndex device_index,
 		uint8_t sub_id,
 		uint8_t address,
-		const std::vector<uint8_t> &params);
+		std::vector<uint8_t>::const_iterator param_begin,
+		std::vector<uint8_t>::const_iterator param_end);
 
 	/**
 	 * Access HID++ 1.0 report subID.
@@ -170,12 +183,12 @@ public:
 	 */
 	bool checkErrorMessage10 (uint8_t *sub_id, uint8_t *address, uint8_t *error_code) const;
 
-	/**@}*/
+	/**\}*/
 
 	/**
 	 * \name HID++ 2.0
 	 *
-	 * @{
+	 * \{
 	 */
 
 	/**
@@ -199,7 +212,8 @@ public:
 		uint8_t feature_index,
 		unsigned int function,
 		unsigned int sw_id,
-		const std::vector<uint8_t> &params);
+		std::vector<uint8_t>::const_iterator param_begin,
+		std::vector<uint8_t>::const_iterator param_end);
 
 	/**
 	 * Access HID++ 2.0 report feature index.
@@ -208,7 +222,7 @@ public:
 	/**
 	 * Set HID++ 2.0 report feature index.
 	 */
-	void setfeatureIndex (uint8_t feature_index);
+	void setFeatureIndex (uint8_t feature_index);
 
 	/**
 	 * Access HID++ 2.0 report function.
@@ -244,35 +258,34 @@ public:
 	 */
 	bool checkErrorMessage20 (uint8_t *feature_index, unsigned int *function, unsigned int *sw_id, uint8_t *error_code) const;
 
-	/**@}*/
+	/**\}*/
 
 	/**
 	 * Get the parameter length of the report.
 	 */
-	std::size_t paramLength () const;
+	std::size_t parameterLength () const;
 	/**
 	 * Get the parameter length for \p type.
 	 */
-	static std::size_t paramLength (Type type);
+	static std::size_t parameterLength (Type type);
 
-	/**
-	 * Access the report parameters.
-	 */
-	std::vector<uint8_t> &params ();
-	/**
-	 * Read-only access to the report parameters.
-	 */
-	const std::vector<uint8_t> &params () const;
+	/** Begin iterator for parameters. */
+	std::vector<uint8_t>::iterator parameterBegin ();
+	/** Begin iterator for parameters. */
+	std::vector<uint8_t>::const_iterator parameterBegin () const;
+	/** End iterator for parameters. */
+	std::vector<uint8_t>::iterator parameterEnd ();
+	/** End iterator for parameters. */
+	std::vector<uint8_t>::const_iterator parameterEnd () const;
 
 	/**
 	 * Get the raw HID report (without the ID).
 	 */
-	const std::vector<uint8_t> rawReport () const;
+	const std::vector<uint8_t> &rawReport () const;
 
 private:
 	static constexpr std::size_t HeaderLength = 4;
-	std::array<uint8_t, HeaderLength> _header;
-	std::vector<uint8_t> _params;
+	std::vector<uint8_t> _data;
 };
 
 }

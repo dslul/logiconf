@@ -16,11 +16,13 @@
  *
  */
 
-#ifndef HIDPP10_DEVICE_H
-#define HIDPP10_DEVICE_H
+#ifndef LIBHIDPP_HIDPP10_DEVICE_H
+#define LIBHIDPP_HIDPP10_DEVICE_H
 
 #include <hidpp/Device.h>
 #include <hidpp/Report.h>
+
+namespace HIDPP { class Dispatcher; }
 
 namespace HIDPP10
 {
@@ -28,7 +30,8 @@ namespace HIDPP10
 class Device: public HIDPP::Device
 {
 public:
-	Device (const std::string &path, HIDPP::DeviceIndex device_index = HIDPP::DefaultDevice);
+	Device (HIDPP::Dispatcher *dispatcher, HIDPP::DeviceIndex device_index = HIDPP::DefaultDevice);
+	Device (HIDPP::Device &&device);
 
 	void setRegister (uint8_t address,
 			  const std::vector<uint8_t> &params,
@@ -38,10 +41,11 @@ public:
 			  std::vector<uint8_t> &results);
 
 	void sendDataPacket (uint8_t sub_id, uint8_t seq_num,
-			     const std::vector<uint8_t> &params,
+			     std::vector<uint8_t>::const_iterator param_begin,
+			     std::vector<uint8_t>::const_iterator param_end,
 			     bool wait_for_ack = false);
 private:
-	template<uint8_t sub_id, std::size_t params_length, std::size_t results_length>
+	template<uint8_t sub_id, HIDPP::Report::Type request_type, HIDPP::Report::Type result_type>
 	void accessRegister (uint8_t address,
 			     const std::vector<uint8_t> *params,
 			     std::vector<uint8_t> *results);

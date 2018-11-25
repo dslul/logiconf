@@ -16,76 +16,54 @@
  *
  */
 
-#include <hidpp20/Device.h>
-#include <hidpp20/Error.h>
+#include "Device.h"
+
+#include <hidpp/Dispatcher.h>
 #include <misc/Log.h>
 
 using namespace HIDPP20;
 
-unsigned int Device::softwareID = 0xd;
+unsigned int Device::softwareID = 1;
 
-Device::Device (const std::string &path, HIDPP::DeviceIndex device_index):
-	HIDPP::Device (path, device_index)
+Device::Device (HIDPP::Dispatcher *dispatcher, HIDPP::DeviceIndex device_index):
+	HIDPP::Device (dispatcher, device_index)
 {
-	// TODO: check version
+	auto version = protocolVersion ();
+	if (std::get<0> (version) < 2)
+		throw HIDPP::Device::InvalidProtocolVersion (version);
+}
+
+Device::Device (HIDPP::Device &&device):
+	HIDPP::Device (std::move (device))
+{
+	auto version = protocolVersion ();
+	if (std::get<0> (version) < 2)
+		throw HIDPP::Device::InvalidProtocolVersion (version);
 }
 
 std::vector<uint8_t> Device::callFunction (uint8_t feature_index,
 					   unsigned int function,
-					   const std::vector<uint8_t> &params)
+					   std::vector<uint8_t>::const_iterator param_begin,
+					   std::vector<uint8_t>::const_iterator param_end)
 {
-	Log::printf (Log::Debug, "Calling feature 0x%02hhx/function %u\n",
-                 feature_index, function);
-	Log::printBytes (Log::Debug, "Parameters:",
-             params.begin (), params.end ());
-    std::vector<uint8_t> in (params);
-	if (in.size () <= HIDPP::ShortParamLength)
-		in.resize (HIDPP::ShortParamLength, 0);
-	else if (in.size () <= HIDPP::LongParamLength)
-		in.resize (HIDPP::LongParamLength, 0);
+	auto debug = Log::debug ("call");
+	debug.printf ("Calling feature 0x%02hhx/function %u\n", feature_index, function);
+	debug.printBytes ("Parameters:", param_begin, param_end);
+
+	std::size_t len = std::distance (param_begin, param_end);
+	HIDPP::Report::Type type;
+	if (len <= HIDPP::ShortParamLength)
+		type = HIDPP::Report::Short;
+	else if (len <= HIDPP::LongParamLength)
+		type = HIDPP::Report::Long;
 	else {
 		throw std::logic_error ("Parameters too long");
 	}
-	HIDPP::Report request (deviceIndex (), feature_index, function, softwareID, in);
-	sendReport (request);
-	while (true) {
-		HIDPP::Report response = getReport ();
-		
-		if (response.deviceIndex () != deviceIndex ()) {
-				Log::debug () << __FUNCTION__ << ": "
-					      << "Ignored report with wrong device index"
-					      << std::endl;
-			continue;
-		}
+	HIDPP::Report request (type, deviceIndex (), feature_index, function, softwareID);
+	std::copy (param_begin, param_end, request.parameterBegin ());
 
-        uint8_t r_feature_index, error_code;
-		unsigned int r_function, r_sw_id;
-		if (response.checkErrorMessage20 (&r_feature_index,
-						  &r_function,
-						  &r_sw_id,
-						  &error_code)) {
-			if (r_feature_index != feature_index ||
-			    r_function != function ||
-			    r_sw_id != softwareID) {
-				Log::debug () << __FUNCTION__ << ": "
-					<< "Ignored error message with wrong feature/function/softwareID"
-					<< std::endl;
-				continue;
-			}
+	auto response = dispatcher ()->sendCommand (std::move (request))->get ();
 
-			Log::printf (Log::Debug, "Received error message with code 0x%02hhx\n", error_code);
-			throw Error (static_cast<Error::ErrorCode> (error_code));
-		}
-		if (response.featureIndex () == feature_index &&
-		    response.function () == function &&
-		    response.softwareID () == softwareID) {
-			Log::printBytes (Log::Debug, "Results:",
-					 response.params ().begin (),
-					 response.params ().end ());
-			return response.params ();
-		}
-		Log::debug () << __FUNCTION__ << ": "
-			<< "Ignored report with wrong feature/function/softwareID"
-            << std::endl;
-	}
+	debug.printBytes ("Results:", response.parameterBegin (), response.parameterEnd ());
+	return std::vector<uint8_t> (response.parameterBegin (), response.parameterEnd ());
 }

@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef HIDPP20_ERROR_H
-#define HIDPP20_ERROR_H
+#ifndef LIBHIDPP_HIDPP20_ERROR_H
+#define LIBHIDPP_HIDPP20_ERROR_H
 
 #include <stdexcept>
 
@@ -40,15 +40,16 @@ public:
 		InvalidFunctionID = 7,
 		Busy = 8,
 		Unsupported = 9,
+		UnknownDevice = 10,
 	};
 
-	Error (ErrorCode error_code);
+	Error (uint8_t error_code);
 
 	virtual const char *what () const noexcept;
-	ErrorCode errorCode () const;
+	uint8_t errorCode () const;
 
 private:
-	ErrorCode _error_code;
+	uint8_t _error_code;
 };
 
 }

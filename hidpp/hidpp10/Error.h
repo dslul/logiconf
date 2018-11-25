@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef HIDPP10_ERROR_H
-#define HIDPP10_ERROR_H
+#ifndef LIBHIDPP_HIDPP10_ERROR_H
+#define LIBHIDPP_HIDPP10_ERROR_H
 
 #include <stdexcept>
 
@@ -45,13 +45,13 @@ public:
 		WrongPINCode = 0x0C,
 	};
 
-	Error (ErrorCode error_code);
+	Error (uint8_t error_code);
 
 	virtual const char *what () const noexcept;
-	ErrorCode errorCode () const;
+	uint8_t errorCode () const;
 
 private:
-	ErrorCode _error_code;
+	uint8_t _error_code;
 };
 
 }

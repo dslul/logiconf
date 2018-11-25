@@ -18,43 +18,38 @@
 
 #include <hidpp20/IFeatureSet.h>
 
-#include <hidpp20/Device.h>
-#include <hidpp20/IRoot.h>
-#include <misc/Log.h>
 #include <misc/Endian.h>
 
 using namespace HIDPP20;
 
-IFeatureSet::IFeatureSet (Device *dev):
-	_dev (dev),
-	_index (IRoot (dev).getFeature (ID))
-{
-	Log::printf (Log::Debug, "Feature [0x%04hx] IFeatureSet has index 0x%02hhx\n", ID, _index);
-}
+constexpr uint16_t IFeatureSet::ID;
 
-uint8_t IFeatureSet::index () const
+IFeatureSet::IFeatureSet (Device *dev):
+	FeatureInterface (dev, ID, "FeatureSet")
 {
-	return _index;
 }
 
 unsigned int IFeatureSet::getCount ()
 {
-	std::vector<uint8_t> params, results;
-	results = _dev->callFunction (_index, GetCount, params);
+	std::vector<uint8_t> results;
+	results = call (GetCount);
 	return results[0];
 }
 
 uint16_t IFeatureSet::getFeatureID (uint8_t feature_index,
 				    bool *obsolete,
-				    bool *hidden)
+				    bool *hidden,
+				    bool *internal)
 {
 	std::vector<uint8_t> params (1), results;
 	params[0] = feature_index;
-	results = _dev->callFunction (_index, GetFeatureID, params);
+	results = call (GetFeatureID, params);
 	if (obsolete)
 		*obsolete = results[2] & (1<<7);
 	if (hidden)
 		*hidden = results[2] & (1<<6);
+	if (internal)
+		*internal = results[2] & (1<<5);
 	return readBE<uint16_t> (results, 0);
 }
 

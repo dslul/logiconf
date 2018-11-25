@@ -16,17 +16,15 @@
  *
  */
 
-#ifndef HIDPP20_IFEATURESET_H
-#define HIDPP20_IFEATURESET_H
+#ifndef LIBHIDPP_HIDPP20_IFEATURESET_H
+#define LIBHIDPP_HIDPP20_IFEATURESET_H
 
-#include <cstdint>
+#include <hidpp20/FeatureInterface.h>
 
 namespace HIDPP20
 {
 
-class Device;
-
-class IFeatureSet
+class IFeatureSet: public FeatureInterface
 {
 public:
 	static constexpr uint16_t ID = 0x0001;
@@ -38,16 +36,11 @@ public:
 
 	IFeatureSet (Device *dev);
 
-	uint8_t index () const;
-
 	unsigned int getCount ();
 	uint16_t getFeatureID (uint8_t feature_index,
 			       bool *obsolete = nullptr,
-			       bool *hidden = nullptr);
-
-private:
-	Device *_dev;
-	uint8_t _index;
+			       bool *hidden = nullptr,
+			       bool *internal = nullptr);
 };
 
 }
