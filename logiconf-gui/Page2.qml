@@ -1,4 +1,5 @@
 import QtQuick 2.7
+import dslul.devicecomm 1.0
 
 Page2Form {
     property int resNum: resNumSpinBox.value

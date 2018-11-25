@@ -1,17 +1,25 @@
 #ifndef DEVICEMANAGER_H
 #define DEVICEMANAGER_H
 
-#include <QQuickItem>
+#include <hidpp20/Device.h>
+#include <hid/DeviceMonitor.h>
 
-class DeviceManager : public QQuickItem
+class DeviceManager : public HID::DeviceMonitor
 {
-    Q_OBJECT
 public:
-    DeviceManager();
+    std::string getDevicePath();
+    //DeviceManager();
 
-signals:
+private:
+    std::string pathdev;
 
-public slots:
+
+
+
+
+protected:
+    void addDevice(const char *path);
+    void removeDevice(const char *path);
 };
 
 #endif // DEVICEMANAGER_H

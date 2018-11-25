@@ -25,10 +25,6 @@ ApplicationWindow {
         }
     }
 
-    DevCom {
-        id: devcomm
-    }
-
     SwipeView {
         id: swipeView
         anchors.fill: parent
@@ -42,7 +38,7 @@ ApplicationWindow {
 
         Page {
             Label {
-                text: devcomm.getDeviceName()
+                text: DevCom.getDeviceName()
                 anchors.centerIn: parent
             }
 

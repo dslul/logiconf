@@ -4,12 +4,18 @@
 #include <QObject>
 #include <QStandardPaths>
 #include <hidpp20/Device.h>
+#include <hidpp20/IOnboardProfiles.h>
+#include <hidpp20/IAdjustableDPI.h>
+#include <hidpp20/ProfileFormat.h>
 
 class DeviceCommunicator : public QObject
 {
     Q_OBJECT
 public:
     explicit DeviceCommunicator(QObject *parent = 0);
+    Q_INVOKABLE void setDPIIndex(int level);
+    Q_INVOKABLE int getDPIIndex();
+    Q_INVOKABLE int getcurrentDPI();
     Q_INVOKABLE void toggleDPILed();
     Q_INVOKABLE bool isDPILedOn();
     Q_INVOKABLE void setLogoBrightness(quint16 value);
@@ -21,7 +27,11 @@ public:
     Q_INVOKABLE quint16 getBreathingRate();
     Q_INVOKABLE bool isBreathingEnabled();
 private:
-    HIDPP20::Device dev;
+    HIDPP20::Device *dev;
+    HIDPP20::IOnboardProfiles *profiles;
+    HIDPP::Profile *profile;
+    HIDPP20::IAdjustableDPI *dpi;
+    HIDPP20::ProfileFormat *profileformat;
     quint16 breathingIntensity;
     quint16 breathingRate;
     quint16 oldBreathingRate;

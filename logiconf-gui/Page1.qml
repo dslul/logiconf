@@ -1,51 +1,52 @@
 import QtQuick 2.7
+import dslul.devicecomm 1.0
 
 Page1Form {
     property bool settingsLoaded: false
 
     switchDpiLed.onCheckedChanged: {
         if(settingsLoaded === true)
-            devcomm.toggleDPILed()
+            DevCom.toggleDPILed()
     }
 
     checkBoxGlow.onCheckedChanged: {
         if(settingsLoaded === true) {
             if(checkBoxGlow.checked === true) {
                 sliderGlow.enabled = true
-                devcomm.setLogoGlow(sliderGlow.value)
+                DevCom.setLogoGlow(sliderGlow.value)
             } else {
                 sliderGlow.enabled = false
-                devcomm.disableGlow()
+                DevCom.disableGlow()
             }
         }
     }
 
     sliderBrightness.onValueChanged: {
         if(settingsLoaded === true)
-            devcomm.setLogoBrightness(sliderBrightness.value)
+            DevCom.setLogoBrightness(sliderBrightness.value)
     }
 
     sliderGlow.onValueChanged: {
         if(settingsLoaded === true)
-            devcomm.setLogoGlow(sliderGlow.value)
+            DevCom.setLogoGlow(sliderGlow.value)
     }
 
 
 
     Component.onCompleted: {
-        if(devcomm.isDPILedOn())
+        if(DevCom.isDPILedOn())
             switchDpiLed.checked = true
         else
             switchDpiLed.checked = false
-        if(devcomm.isBreathingEnabled()) {
+        if(DevCom.isBreathingEnabled()) {
             checkBoxGlow.checked = true
             sliderGlow.enabled = true
         } else {
             checkBoxGlow.checked = false
             sliderGlow.enabled = false
         }
-        sliderBrightness.value = devcomm.getBreathingIntensity()
-        sliderGlow.value = devcomm.getBreathingRate()
+        sliderBrightness.value = DevCom.getBreathingIntensity()
+        sliderGlow.value = DevCom.getBreathingRate()
         settingsLoaded = true
     }
 }

@@ -1,10 +1,10 @@
 QT += qml quick
 
-CONFIG += c++11
+CONFIG += c++14
 
 SOURCES += main.cpp \
     devicecommunicator.cpp \
-    ProfileManager.cpp
+    devicemanager.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,11 +32,19 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     devicecommunicator.h \
-    ProfileManager.h
+    devicemanager.h
 
 unix:!macx: LIBS += -L$$OUT_PWD/../hidpp/ -lhidpp
 
 INCLUDEPATH += $$PWD/../hidpp
 DEPENDPATH += $$PWD/../hidpp
+
+unix {
+    packagesExist(libudev) {
+        CONFIG += link_pkgconfig
+        DEFINES += LINK_LIBUDEV
+        PKGCONFIG += libudev
+    }
+}
 
 unix:!macx: PRE_TARGETDEPS += $$OUT_PWD/../hidpp/libhidpp.a

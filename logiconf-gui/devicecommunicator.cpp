@@ -6,15 +6,54 @@
 #include <QJsonDocument>
 #include <QFile>
 
-#include <hidpp20/Device.h>
+#include <hid/DeviceMonitor.h>
+#include <hidpp/SimpleDispatcher.h>
 #include <hidpp20/Error.h>
+#include <hidpp20/MemoryMapping.h>
+#include <hidpp20/ProfileDirectoryFormat.h>
+#include <QTextStream>
 
 #include "devicecommunicator.h"
+#include "devicemanager.h"
 
 DeviceCommunicator::DeviceCommunicator(QObject *parent)
-    : QObject(parent), dev("/dev/hidraw1", HIDPP::DefaultDevice),
+    : QObject(parent), dev(nullptr), profiles(nullptr), profile(nullptr),
+      dpi(nullptr), profileformat(nullptr),
       breathingIntensity(200), breathingRate(10000), oldBreathingRate(10000)
 {
+
+    DeviceManager devmanager;
+    devmanager.enumerate();
+
+    HIDPP::Dispatcher *dispatcher = new HIDPP::SimpleDispatcher(devmanager.getDevicePath().c_str());
+    dev = new HIDPP20::Device(dispatcher, HIDPP::DefaultDevice);
+    profiles = new HIDPP20::IOnboardProfiles(dev);
+    profile = new HIDPP::Profile();
+    dpi = new HIDPP20::IAdjustableDPI(dev);
+    profileformat = new HIDPP20::ProfileFormat(profiles->getDescription());
+
+
+    HIDPP::Address dir_address;
+    dir_address = HIDPP::Address { HIDPP20::IOnboardProfiles::Writeable, 0, 0 };
+    std::unique_ptr<HIDPP::AbstractProfileDirectoryFormat> profdir_format;
+    profdir_format = HIDPP20::getProfileDirectoryFormat(dev);
+    std::unique_ptr<HIDPP::AbstractMemoryMapping> memory;
+    memory.reset(new HIDPP20::MemoryMapping(dev));
+
+    auto profdir_it = memory->getReadOnlyIterator(dir_address);
+    HIDPP::ProfileDirectory profdir = profdir_format->read (profdir_it);
+    for (const auto &entry: profdir.entries) {
+                auto it = memory->getReadOnlyIterator(entry.profile_address);
+                *profile = profileformat->read(it);
+    }
+    //std::cout << profile->settings.at("angle_snapping").toString() << "\n";
+    //for(auto elem : profile->settings)
+    //   std::cout << elem.first << " - " << "\n";
+
+
+    //profile.setCurrentDPIIndex(4);
+    //profile.setCurrentProfile(HIDPP20::IOnboardProfiles::MemoryType::Writeable, 1);
+    //std::cout << profile->settings << std::endl;
 
     QFile savefile(savefilePath);
     std::cout << savefilePath.toStdString() << std::endl;
@@ -51,17 +90,32 @@ DeviceCommunicator::DeviceCommunicator(QObject *parent)
     savefile.close();
 }
 
+void DeviceCommunicator::setDPIIndex(int level)
+{
+    return profiles->setCurrentDPIIndex(level);
+}
+
+int DeviceCommunicator::getDPIIndex()
+{
+    return profiles->getCurrentDPIIndex();
+}
+
+int DeviceCommunicator::getcurrentDPI()
+{
+    return std::get<0>(dpi->getSensorDPI(0));
+}
+
 void DeviceCommunicator::toggleDPILed()
 {
     if(isDPILedOn())
-        dev.callFunction(5, 7, {0,4,0});
+        dev->callFunction(5, 7, {0,4,0});
     else
-        dev.callFunction(5, 7, {0,2,0});
+        dev->callFunction(5, 7, {0,2,0});
 }
 
 bool DeviceCommunicator::isDPILedOn()
 {
-    std::vector<uint8_t> result = dev.callFunction(5, 6, {0,0,0});
+    std::vector<uint8_t> result = dev->callFunction(5, 6, {0,0,0});
     if(result.at(1) == 0x04) {
         return false;
     } else if(result.at(1) == 0x02) {
@@ -97,16 +151,16 @@ void DeviceCommunicator::setLogoGlow(quint16 value)
 
 void DeviceCommunicator::setBackLlight(quint16 intensity, quint16 rate)
 {
-    dev.callFunction(5, 3, {1,0,0});
-    dev.callFunction(5, 5, {1,0,0x80,0,(uint8_t)intensity,
+    dev->callFunction(5, 3, {1,0,0});
+    dev->callFunction(5, 5, {1,0,0x80,0,(uint8_t)intensity,
                             (uint8_t)(rate>>8),(uint8_t)(rate&0x00ff),0,0,0,0,0,0,0,0,0});
-    dev.callFunction(5, 3, {0,0,0});
+    dev->callFunction(5, 3, {0,0,0});
     saveSettings();
 }
 
 QString DeviceCommunicator::getDeviceName()
 {
-    return QString::fromStdString(dev.name());
+    return QString::fromStdString(dev->name());
 }
 
 void DeviceCommunicator::saveSettings()
