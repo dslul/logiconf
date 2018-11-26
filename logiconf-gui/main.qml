@@ -18,7 +18,10 @@ ApplicationWindow {
             text: qsTr("LEDs")
         }
         TabButton {
-            text: qsTr("Profiles")
+            text: qsTr("Profiles (not working yet)")
+        }
+        TabButton {
+            text: qsTr("Fusion Engine")
         }
         TabButton {
             text: qsTr("Device info")
@@ -34,6 +37,9 @@ ApplicationWindow {
         }
 
         Page2 {
+        }
+
+        PageFusionEngine {
         }
 
         Page {

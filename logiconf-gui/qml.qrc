@@ -7,5 +7,7 @@
         <file>Page2.qml</file>
         <file>Page2Form.ui.qml</file>
         <file>DpiEdit.ui.qml</file>
+        <file>PageFusionEngine.qml</file>
+        <file>PageFusionEngineForm.ui.qml</file>
     </qresource>
 </RCC>

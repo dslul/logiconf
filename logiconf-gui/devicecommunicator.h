@@ -13,9 +13,20 @@ class DeviceCommunicator : public QObject
     Q_OBJECT
 public:
     explicit DeviceCommunicator(QObject *parent = 0);
+    Q_INVOKABLE int getReportRate();
+    Q_INVOKABLE void setReportRate(int rate);
+    Q_INVOKABLE int getMinDPI();
+    Q_INVOKABLE int getMaxDPI();
+    Q_INVOKABLE int getDPIStep();
+    Q_INVOKABLE QList<int> getDPIList();
     Q_INVOKABLE void setDPIIndex(int level);
     Q_INVOKABLE int getDPIIndex();
     Q_INVOKABLE int getcurrentDPI();
+
+    Q_INVOKABLE bool isFusionEngineEnabled();
+    Q_INVOKABLE void enableFusionEngine();
+    Q_INVOKABLE void disableFusionEngine();
+
     Q_INVOKABLE void toggleDPILed();
     Q_INVOKABLE bool isDPILedOn();
     Q_INVOKABLE void setLogoBrightness(quint16 value);

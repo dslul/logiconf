@@ -6,6 +6,9 @@ RowLayout {
     id: rowLayout
     width: 100
     height: 100
+    property alias btnSelect: btnSelect
+    property alias btnDisable: btnDisable
+    property alias spinBox: spinBox
 
     Label {
         id: label
@@ -14,16 +17,19 @@ RowLayout {
 
     SpinBox {
         id: spinBox
+        editable: true
+        to: 4000
     }
 
     Button {
-        id: button
-        text: qsTr("Button")
+        id: btnSelect
+        text: qsTr("Select")
     }
 
     Button {
-        id: button1
-        text: qsTr("Button")
+        id: btnDisable
+        text: qsTr("Disable")
     }
+
 }
 

@@ -46,14 +46,18 @@ DeviceCommunicator::DeviceCommunicator(QObject *parent)
                 auto it = memory->getReadOnlyIterator(entry.profile_address);
                 *profile = profileformat->read(it);
     }
+
     //std::cout << profile->settings.at("angle_snapping").toString() << "\n";
     //for(auto elem : profile->settings)
     //   std::cout << elem.first << " - " << "\n";
+    //setReportRate(2);
 
-
-    //profile.setCurrentDPIIndex(4);
+    //dpi->setSensorDPI(0, 1722);
     //profile.setCurrentProfile(HIDPP20::IOnboardProfiles::MemoryType::Writeable, 1);
-    //std::cout << profile->settings << std::endl;
+    //std::cout << profile->modes.at(0) << std::endl;
+
+
+
 
     QFile savefile(savefilePath);
     std::cout << savefilePath.toStdString() << std::endl;
@@ -90,6 +94,55 @@ DeviceCommunicator::DeviceCommunicator(QObject *parent)
     savefile.close();
 }
 
+int DeviceCommunicator::getReportRate()
+{
+    return profiles->memoryRead(HIDPP20::IOnboardProfiles::MemoryType::Writeable, 1, 0).at(0);
+}
+
+void DeviceCommunicator::setReportRate(int rate)
+{
+    /*std::vector<uint8_t> vect(rate);
+    profiles->memoryAddrWrite(1, 0, 1);
+    profiles->memoryWrite(vect.begin(), vect.begin()+1);
+    profiles->memoryWriteEnd();*/
+    return;
+}
+
+int DeviceCommunicator::getMinDPI()
+{
+    std::vector<unsigned int> list;
+    unsigned int step;
+    dpi->getSensorDPIList(0, list, step);
+    return list.at(0);
+}
+
+int DeviceCommunicator::getMaxDPI()
+{
+    std::vector<unsigned int> list;
+    unsigned int step;
+    dpi->getSensorDPIList(0, list, step);
+    return list.at(1);
+}
+
+int DeviceCommunicator::getDPIStep()
+{
+    std::vector<unsigned int> list;
+    unsigned int step;
+    dpi->getSensorDPIList(0, list, step);
+    return step;
+}
+
+QList<int> DeviceCommunicator::getDPIList()
+{
+    QList<int> dpilist;
+    for (const auto &mode: profile->modes) {
+            for (const auto &p: mode)
+                dpilist.append(std::stoi(p.second.toString()));
+    }
+    return dpilist;
+}
+
+
 void DeviceCommunicator::setDPIIndex(int level)
 {
     return profiles->setCurrentDPIIndex(level);
@@ -103,6 +156,21 @@ int DeviceCommunicator::getDPIIndex()
 int DeviceCommunicator::getcurrentDPI()
 {
     return std::get<0>(dpi->getSensorDPI(0));
+}
+
+bool DeviceCommunicator::isFusionEngineEnabled()
+{
+    return dev->callFunction(0x0d, 0, {0,0,0}).at(0);
+}
+
+void DeviceCommunicator::enableFusionEngine()
+{
+    dev->callFunction(0x0d, 1, {1,0,0});
+}
+
+void DeviceCommunicator::disableFusionEngine()
+{
+    dev->callFunction(0x0d, 1, {0,0,0});
 }
 
 void DeviceCommunicator::toggleDPILed()
