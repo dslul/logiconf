@@ -66,6 +66,8 @@ read current DPI:
     10ff0fbb000000
     returns from 00 to 04
 
+check fusion engine (1 enabled 0 disabled):
+    10ff0d0d000000
 disable fusion engine:
     10ff0d1d000000
 enable fusion engine:
