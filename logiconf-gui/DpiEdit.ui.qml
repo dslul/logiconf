@@ -7,8 +7,9 @@ RowLayout {
     width: 100
     height: 100
     property alias btnSelect: btnSelect
-    property alias btnDisable: btnDisable
     property alias spinBox: spinBox
+    signal valueChanged(int value)
+    signal selectClicked
 
     Label {
         id: label
@@ -23,13 +24,17 @@ RowLayout {
 
     Button {
         id: btnSelect
-        text: qsTr("Select")
+        width: 59
+        text: "Select"
     }
 
-    Button {
-        id: btnDisable
-        text: qsTr("Disable")
+    Connections {
+        target: spinBox
+        onValueModified: rowLayout.valueChanged(spinBox.value)
     }
 
+    Connections {
+        target: btnSelect
+        onClicked: rowLayout.selectClicked()
+    }
 }
-

@@ -18,7 +18,7 @@ ApplicationWindow {
             text: qsTr("LEDs")
         }
         TabButton {
-            text: qsTr("Profiles (not working yet)")
+            text: qsTr("Profiles")
         }
         TabButton {
             text: qsTr("Fusion Engine")
@@ -43,9 +43,18 @@ ApplicationWindow {
         }
 
         Page {
-            Label {
-                text: DevCom.getDeviceName()
-                anchors.centerIn: parent
+            Column {
+                anchors.top: parent.top
+                anchors.topMargin: 20
+                spacing: 5
+                anchors.left: parent.left
+                anchors.leftMargin: 40
+                Label {
+                    text: DevCom.getDeviceName()
+                }
+                Label {
+                    text: "Firmware Version: "+ DevCom.getFirmwareVersion()
+                }
             }
 
         }

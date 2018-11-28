@@ -16,8 +16,8 @@
  *
  */
 
+#include <iostream>
 #include "Setting.h"
-
 #include <misc/Log.h>
 
 #include <array>
@@ -95,7 +95,53 @@ Setting::Setting (Setting &&other):
 	_type (other._type),
 	_value (other._value)
 {
-	other._value = nullptr;
+    other._value = nullptr;
+}
+
+Setting &&Setting::operator=(Setting &&other)
+{
+    _type = other._type,
+    _value = other._value;
+    other._value = nullptr;
+}
+
+bool Setting::operator==(const Setting &other) const
+{
+    if(_type == other._type) {
+        switch (_type) {
+        case Type::String:
+            if(*reinterpret_cast<std::string*>(other._value) == *reinterpret_cast<std::string*>(_value))
+                return true;
+            break;
+        case Type::Boolean:
+            if(*reinterpret_cast<bool*>(other._value) == *reinterpret_cast<bool*>(_value))
+                return true;
+            break;
+        case Type::Integer:
+            if(*reinterpret_cast<int*>(other._value) == *reinterpret_cast<int*>(_value))
+                return true;
+            break;
+        case Type::LEDVector:
+            if(*reinterpret_cast<LEDVector*>(other._value) == *reinterpret_cast<LEDVector*>(_value))
+                return true;
+            break;
+        case Type::Color:
+            //TODO: overload ==
+            //if(*reinterpret_cast<Color*>(other._value) == *reinterpret_cast<Color*>(_value))
+                return true;
+            break;
+        case Type::ComposedSetting:
+            if(*reinterpret_cast<ComposedSetting*>(other._value) == *reinterpret_cast<ComposedSetting*>(_value))
+                return true;
+            break;
+        case Type::Enum:
+            //if(*reinterpret_cast<EnumValue*>(other._value) == *reinterpret_cast<EnumValue*>(_value))
+                return true;
+            break;
+        }
+    }
+    return false;
+
 }
 
 Setting::~Setting ()

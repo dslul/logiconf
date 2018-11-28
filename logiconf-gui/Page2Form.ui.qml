@@ -3,18 +3,20 @@ import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 
 Item {
+    id: root
     width: 400
     height: 400
+    property alias resNumSpinBox: resNumSpinBox
+    property alias repeater: repeater
+    property alias btnApply: btnApply
     property alias radio100: radio100
     property alias radio250: radio250
     property alias radio500: radio500
     property alias radio1000: radio1000
-    property alias dpiEdit5: dpiEdit5
-    property alias dpiEdit4: dpiEdit4
-    property alias dpiEdit3: dpiEdit3
-    property alias dpiEdit2: dpiEdit2
-    property alias dpiEdit1: dpiEdit1
     property alias columnLayout1: columnLayout1
+    signal dpiValueChanged(int level, int value)
+    signal btnSelectClicked(int level)
+
 
     RowLayout {
         id: rowLayout
@@ -60,6 +62,22 @@ Item {
                 }
             }
 
+            RowLayout {
+                id: rowLayout2
+                width: 100
+                height: 100
+
+                Label {
+                    id: label1
+                    text: qsTr("Number of resolutions")
+                }
+
+                SpinBox {
+                    id: resNumSpinBox
+                    from: 1
+                }
+            }
+
             ColumnLayout {
                 id: columnLayout1
                 width: 100
@@ -70,26 +88,24 @@ Item {
                     text: qsTr("Resolutions:")
                 }
 
-                DpiEdit {
-                    id: dpiEdit1
+                Repeater {
+                    id: repeater
+                    DpiEdit {
+                        // @disable-check M222
+                        onValueChanged: dpiValueChanged(index, value)
+                        // @disable-check M222
+                        onSelectClicked: btnSelectClicked(index)
+                    }
                 }
+            }
 
-                DpiEdit {
-                    id: dpiEdit2
-                }
-
-                DpiEdit {
-                    id: dpiEdit3
-                }
-
-                DpiEdit {
-                    id: dpiEdit4
-                }
-
-                DpiEdit {
-                    id: dpiEdit5
-                }
+            Button {
+                id: btnApply
+                text: qsTr("Apply")
+                enabled: false
             }
         }
     }
+
+
 }

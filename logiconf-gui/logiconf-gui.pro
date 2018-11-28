@@ -34,7 +34,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     devicecommunicator.h \
-    devicemanager.h
+    devicemanager.h \
+    profile.h
 
 unix:!macx: LIBS += -L$$OUT_PWD/../hidpp/ -lhidpp
 

@@ -70,6 +70,9 @@ public:
 	Setting (const Setting &other);
 	Setting (Setting &&other);
 
+    Setting &&operator=(Setting &&other);
+    bool operator==(const Setting &other) const;
+
 	~Setting ();
 
 	Type type () const;

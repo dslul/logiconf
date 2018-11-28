@@ -7,6 +7,9 @@
 #include <hidpp20/IOnboardProfiles.h>
 #include <hidpp20/IAdjustableDPI.h>
 #include <hidpp20/ProfileFormat.h>
+#include <hidpp/AbstractMemoryMapping.h>
+
+#include "profile.h"
 
 class DeviceCommunicator : public QObject
 {
@@ -15,6 +18,9 @@ public:
     explicit DeviceCommunicator(QObject *parent = 0);
     Q_INVOKABLE int getReportRate();
     Q_INVOKABLE void setReportRate(int rate);
+    Q_INVOKABLE void setDPI(int level, int dpi);
+    Q_INVOKABLE void removeDPILevel(int level);
+    Q_INVOKABLE void addDPILevel(int dpi);
     Q_INVOKABLE int getMinDPI();
     Q_INVOKABLE int getMaxDPI();
     Q_INVOKABLE int getDPIStep();
@@ -23,14 +29,21 @@ public:
     Q_INVOKABLE int getDPIIndex();
     Q_INVOKABLE int getcurrentDPI();
 
+    Q_INVOKABLE int getMaxModesNumber();
+    Q_INVOKABLE int getMaxButtonsNumber();
+
     Q_INVOKABLE bool isFusionEngineEnabled();
     Q_INVOKABLE void enableFusionEngine();
     Q_INVOKABLE void disableFusionEngine();
+
+    Q_INVOKABLE bool isPendingModification();
+    Q_INVOKABLE void applySettings();
 
     Q_INVOKABLE void toggleDPILed();
     Q_INVOKABLE bool isDPILedOn();
     Q_INVOKABLE void setLogoBrightness(quint16 value);
     Q_INVOKABLE QString getDeviceName();
+    Q_INVOKABLE QString getFirmwareVersion();
     Q_INVOKABLE void disableGlow();
     Q_INVOKABLE void enableGlow();
     Q_INVOKABLE void setLogoGlow(quint16 value);
@@ -40,14 +53,21 @@ public:
 private:
     HIDPP20::Device *dev;
     HIDPP20::IOnboardProfiles *profiles;
-    HIDPP::Profile *profile;
+    HIDPP::Profile *hidprofile;
+    HIDPP::Profile tmpprofile;
     HIDPP20::IAdjustableDPI *dpi;
     HIDPP20::ProfileFormat *profileformat;
+    HIDPP::Address profileaddress;
+
+    std::unique_ptr<HIDPP::AbstractMemoryMapping> memory;
+
+    Profile *profile;
+
     quint16 breathingIntensity;
     quint16 breathingRate;
     quint16 oldBreathingRate;
     QString savefilePath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/settings.json";
-    QString executeHidCommand(QString command);
+
 
     QString quint16toHexString(quint16 val, int bytenum);
     void saveSettings();

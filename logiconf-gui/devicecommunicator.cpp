@@ -17,8 +17,8 @@
 #include "devicemanager.h"
 
 DeviceCommunicator::DeviceCommunicator(QObject *parent)
-    : QObject(parent), dev(nullptr), profiles(nullptr), profile(nullptr),
-      dpi(nullptr), profileformat(nullptr),
+    : QObject(parent), dev(nullptr), profiles(nullptr), hidprofile(nullptr),
+      dpi(nullptr), profileformat(nullptr), profile(nullptr),
       breathingIntensity(200), breathingRate(10000), oldBreathingRate(10000)
 {
 
@@ -28,7 +28,7 @@ DeviceCommunicator::DeviceCommunicator(QObject *parent)
     HIDPP::Dispatcher *dispatcher = new HIDPP::SimpleDispatcher(devmanager.getDevicePath().c_str());
     dev = new HIDPP20::Device(dispatcher, HIDPP::DefaultDevice);
     profiles = new HIDPP20::IOnboardProfiles(dev);
-    profile = new HIDPP::Profile();
+    hidprofile = new HIDPP::Profile();
     dpi = new HIDPP20::IAdjustableDPI(dev);
     profileformat = new HIDPP20::ProfileFormat(profiles->getDescription());
 
@@ -37,27 +37,33 @@ DeviceCommunicator::DeviceCommunicator(QObject *parent)
     dir_address = HIDPP::Address { HIDPP20::IOnboardProfiles::Writeable, 0, 0 };
     std::unique_ptr<HIDPP::AbstractProfileDirectoryFormat> profdir_format;
     profdir_format = HIDPP20::getProfileDirectoryFormat(dev);
-    std::unique_ptr<HIDPP::AbstractMemoryMapping> memory;
     memory.reset(new HIDPP20::MemoryMapping(dev));
 
     auto profdir_it = memory->getReadOnlyIterator(dir_address);
-    HIDPP::ProfileDirectory profdir = profdir_format->read (profdir_it);
+    HIDPP::ProfileDirectory profdir = profdir_format->read(profdir_it);
     for (const auto &entry: profdir.entries) {
-                auto it = memory->getReadOnlyIterator(entry.profile_address);
-                *profile = profileformat->read(it);
+        profileaddress = entry.profile_address;
+        auto it = memory->getReadOnlyIterator(profileaddress);
+        *hidprofile = profileformat->read(it);
     }
+    for(auto elem : profileformat->generalSettings())
+        std::cout << elem.first << std::endl;
 
-    //std::cout << profile->settings.at("angle_snapping").toString() << "\n";
-    //for(auto elem : profile->settings)
-    //   std::cout << elem.first << " - " << "\n";
-    //setReportRate(2);
 
     //dpi->setSensorDPI(0, 1722);
     //profile.setCurrentProfile(HIDPP20::IOnboardProfiles::MemoryType::Writeable, 1);
     //std::cout << profile->modes.at(0) << std::endl;
 
+    tmpprofile = *hidprofile;
 
+    //tmpprofile.settings.at("report_rate") = std::move(HIDPP::Setting(1));
+    std::cout << hidprofile->settings.at("report_rate").toString() << std::endl;
+    std::cout << tmpprofile.settings.at("report_rate").toString() << std::endl;
 
+    //tmpprofile.modes[0].at("dpi") = std::move(HIDPP::Setting(400));
+    std::cout << hidprofile->modes[0].at("dpi").toString() << std::endl;
+
+    //applySettings();
 
     QFile savefile(savefilePath);
     std::cout << savefilePath.toStdString() << std::endl;
@@ -96,16 +102,29 @@ DeviceCommunicator::DeviceCommunicator(QObject *parent)
 
 int DeviceCommunicator::getReportRate()
 {
-    return profiles->memoryRead(HIDPP20::IOnboardProfiles::MemoryType::Writeable, 1, 0).at(0);
+    return hidprofile->settings.at("report_rate").get<int>();
 }
 
 void DeviceCommunicator::setReportRate(int rate)
 {
-    /*std::vector<uint8_t> vect(rate);
-    profiles->memoryAddrWrite(1, 0, 1);
-    profiles->memoryWrite(vect.begin(), vect.begin()+1);
-    profiles->memoryWriteEnd();*/
-    return;
+    tmpprofile.settings.at("report_rate") = std::move(HIDPP::Setting(rate));
+}
+
+void DeviceCommunicator::setDPI(int level, int dpi)
+{
+    tmpprofile.modes[level].at("dpi") = std::move(HIDPP::Setting(dpi));
+}
+
+void DeviceCommunicator::removeDPILevel(int level)
+{
+    tmpprofile.modes.erase(tmpprofile.modes.begin()+level-1);
+}
+
+void DeviceCommunicator::addDPILevel(int dpi)
+{
+    std::map<std::string, HIDPP::Setting> val;
+    val.emplace("dpi", HIDPP::Setting(dpi));
+    tmpprofile.modes.push_back(val);
 }
 
 int DeviceCommunicator::getMinDPI()
@@ -113,7 +132,7 @@ int DeviceCommunicator::getMinDPI()
     std::vector<unsigned int> list;
     unsigned int step;
     dpi->getSensorDPIList(0, list, step);
-    return list.at(0);
+    return list.at(0) == 252 ? 240 : list.at(0);
 }
 
 int DeviceCommunicator::getMaxDPI()
@@ -121,7 +140,8 @@ int DeviceCommunicator::getMaxDPI()
     std::vector<unsigned int> list;
     unsigned int step;
     dpi->getSensorDPIList(0, list, step);
-    return list.at(1);
+    //workaround for odd dpi
+    return list.at(1) == 4032 ? 4000 : list.at(1);
 }
 
 int DeviceCommunicator::getDPIStep()
@@ -129,15 +149,15 @@ int DeviceCommunicator::getDPIStep()
     std::vector<unsigned int> list;
     unsigned int step;
     dpi->getSensorDPIList(0, list, step);
-    return step;
+    return step == 84 ? 80 : step;
 }
 
 QList<int> DeviceCommunicator::getDPIList()
 {
     QList<int> dpilist;
-    for (const auto &mode: profile->modes) {
+    for (const auto &mode: hidprofile->modes) {
             for (const auto &p: mode)
-                dpilist.append(std::stoi(p.second.toString()));
+                dpilist.append(p.second.get<int>());
     }
     return dpilist;
 }
@@ -145,6 +165,7 @@ QList<int> DeviceCommunicator::getDPIList()
 
 void DeviceCommunicator::setDPIIndex(int level)
 {
+    std::cout << "Setting level to " << level << std::endl;
     return profiles->setCurrentDPIIndex(level);
 }
 
@@ -156,6 +177,16 @@ int DeviceCommunicator::getDPIIndex()
 int DeviceCommunicator::getcurrentDPI()
 {
     return std::get<0>(dpi->getSensorDPI(0));
+}
+
+int DeviceCommunicator::getMaxModesNumber()
+{
+    return profileformat->maxModeCount();
+}
+
+int DeviceCommunicator::getMaxButtonsNumber()
+{
+    return profileformat->maxButtonCount();
 }
 
 bool DeviceCommunicator::isFusionEngineEnabled()
@@ -171,6 +202,24 @@ void DeviceCommunicator::enableFusionEngine()
 void DeviceCommunicator::disableFusionEngine()
 {
     dev->callFunction(0x0d, 1, {0,0,0});
+}
+
+bool DeviceCommunicator::isPendingModification()
+{
+    //TODO: overload == in HIDPP::Profile
+    return (hidprofile->settings == tmpprofile.settings
+            && hidprofile->modes == tmpprofile.modes) ? false : true;
+}
+
+void DeviceCommunicator::applySettings()
+{
+    if(isPendingModification()) {
+        std::cout << "Writing to memory..." << std::endl;
+        auto it = memory->getWritableIterator(profileaddress);
+        profileformat->write(tmpprofile, it);
+        memory->sync();
+        *hidprofile = tmpprofile;
+    }
 }
 
 void DeviceCommunicator::toggleDPILed()
@@ -229,6 +278,15 @@ void DeviceCommunicator::setBackLlight(quint16 intensity, quint16 rate)
 QString DeviceCommunicator::getDeviceName()
 {
     return QString::fromStdString(dev->name());
+}
+
+QString DeviceCommunicator::getFirmwareVersion()
+{
+    std::vector<uint8_t> v = dev->callFunction(2, 1, {0,0,0});
+    QString val(QString::number(v.at(4), 16)+"."+
+                QString::number(v.at(5), 16)+"."+
+                QString::number(v.at(7), 16));
+    return val;
 }
 
 void DeviceCommunicator::saveSettings()
