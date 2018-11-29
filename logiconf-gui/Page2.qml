@@ -60,6 +60,10 @@ Page2Form {
             print("current index: " + DevCom.getDPIIndex() + " list length: "+dpilist.length)
             if(DevCom.getDPIIndex()+1 > dpilist.length)
                 DevCom.setDPIIndex(dpilist.length-1)
+            if(DevCom.getDefaultDpi()+1 > dpilist.length)
+                DevCom.setDefaultDpi(dpilist.length-1)
+            if(DevCom.getSwitchedDpi()+1 > dpilist.length)
+                DevCom.setSwitchedDpi(dpilist.length-1)
             DevCom.applySettings()
             btnApply.enabled = false;
             var current = DevCom.getDPIIndex()

@@ -18,6 +18,10 @@ public:
     explicit DeviceCommunicator(QObject *parent = 0);
     Q_INVOKABLE int getReportRate();
     Q_INVOKABLE void setReportRate(int rate);
+    Q_INVOKABLE int getDefaultDpi();
+    Q_INVOKABLE void setDefaultDpi(int level);
+    Q_INVOKABLE int getSwitchedDpi();
+    Q_INVOKABLE void setSwitchedDpi(int level);
     Q_INVOKABLE void setDPI(int level, int dpi);
     Q_INVOKABLE void removeDPILevel(int level);
     Q_INVOKABLE void addDPILevel(int dpi);

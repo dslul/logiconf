@@ -110,6 +110,26 @@ void DeviceCommunicator::setReportRate(int rate)
     tmpprofile.settings.at("report_rate") = std::move(HIDPP::Setting(rate));
 }
 
+int DeviceCommunicator::getDefaultDpi()
+{
+    return hidprofile->settings.at("default_dpi").get<int>();
+}
+
+void DeviceCommunicator::setDefaultDpi(int level)
+{
+    tmpprofile.settings.at("default_dpi") = std::move(HIDPP::Setting(level));
+}
+
+int DeviceCommunicator::getSwitchedDpi()
+{
+    return hidprofile->settings.at("switched_dpi").get<int>();
+}
+
+void DeviceCommunicator::setSwitchedDpi(int level)
+{
+    tmpprofile.settings.at("switched_dpi") = std::move(HIDPP::Setting(level));
+}
+
 void DeviceCommunicator::setDPI(int level, int dpi)
 {
     tmpprofile.modes[level].at("dpi") = std::move(HIDPP::Setting(dpi));
