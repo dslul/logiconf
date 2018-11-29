@@ -7,9 +7,9 @@
 #include <hidpp20/IOnboardProfiles.h>
 #include <hidpp20/IAdjustableDPI.h>
 #include <hidpp20/ProfileFormat.h>
+#include <hidpp20/IFeatureSet.h>
 #include <hidpp/AbstractMemoryMapping.h>
 
-#include "profile.h"
 
 class DeviceCommunicator : public QObject
 {
@@ -54,9 +54,13 @@ public:
     Q_INVOKABLE quint16 getBreathingIntensity();
     Q_INVOKABLE quint16 getBreathingRate();
     Q_INVOKABLE bool isBreathingEnabled();
+
+    Q_INVOKABLE bool hasFeature(uint16_t featureid);
+    Q_INVOKABLE uint8_t getFeatureIndex(uint16_t featureid);
 private:
     HIDPP20::Device *dev;
     HIDPP20::IOnboardProfiles *profiles;
+    HIDPP20::IFeatureSet *featureset;
     HIDPP::Profile *hidprofile;
     HIDPP::Profile tmpprofile;
     HIDPP20::IAdjustableDPI *dpi;
@@ -65,7 +69,7 @@ private:
 
     std::unique_ptr<HIDPP::AbstractMemoryMapping> memory;
 
-    Profile *profile;
+    std::map<uint16_t, uint8_t> HIDPP20Features;
 
     quint16 breathingIntensity;
     quint16 breathingRate;

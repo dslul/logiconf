@@ -17,8 +17,8 @@
 #include "devicemanager.h"
 
 DeviceCommunicator::DeviceCommunicator(QObject *parent)
-    : QObject(parent), dev(nullptr), profiles(nullptr), hidprofile(nullptr),
-      dpi(nullptr), profileformat(nullptr), profile(nullptr),
+    : QObject(parent), dev(nullptr), profiles(nullptr), featureset(nullptr),
+      hidprofile(nullptr), dpi(nullptr), profileformat(nullptr),
       breathingIntensity(200), breathingRate(10000), oldBreathingRate(10000)
 {
 
@@ -27,6 +27,7 @@ DeviceCommunicator::DeviceCommunicator(QObject *parent)
 
     HIDPP::Dispatcher *dispatcher = new HIDPP::SimpleDispatcher(devmanager.getDevicePath().c_str());
     dev = new HIDPP20::Device(dispatcher, HIDPP::DefaultDevice);
+    featureset = new HIDPP20::IFeatureSet(dev);
     profiles = new HIDPP20::IOnboardProfiles(dev);
     hidprofile = new HIDPP::Profile();
     dpi = new HIDPP20::IAdjustableDPI(dev);
@@ -49,21 +50,21 @@ DeviceCommunicator::DeviceCommunicator(QObject *parent)
     for(auto elem : profileformat->generalSettings())
         std::cout << elem.first << std::endl;
 
+    unsigned int feature_count = featureset->getCount ();
+    for(int i = 1; i <= feature_count; ++i) {
+        uint8_t feature_index = i;
+        uint16_t feature_id;
+
+        feature_id = featureset->getFeatureID(feature_index);
+        HIDPP20Features.insert(std::pair<uint16_t, uint8_t>(feature_id, i));
+    }
+
+    tmpprofile = *hidprofile;
 
     //dpi->setSensorDPI(0, 1722);
     //profile.setCurrentProfile(HIDPP20::IOnboardProfiles::MemoryType::Writeable, 1);
     //std::cout << profile->modes.at(0) << std::endl;
 
-    tmpprofile = *hidprofile;
-
-    //tmpprofile.settings.at("report_rate") = std::move(HIDPP::Setting(1));
-    std::cout << hidprofile->settings.at("report_rate").toString() << std::endl;
-    std::cout << tmpprofile.settings.at("report_rate").toString() << std::endl;
-
-    //tmpprofile.modes[0].at("dpi") = std::move(HIDPP::Setting(400));
-    std::cout << hidprofile->modes[0].at("dpi").toString() << std::endl;
-
-    //applySettings();
 
     QFile savefile(savefilePath);
     std::cout << savefilePath.toStdString() << std::endl;
@@ -211,17 +212,21 @@ int DeviceCommunicator::getMaxButtonsNumber()
 
 bool DeviceCommunicator::isFusionEngineEnabled()
 {
-    return dev->callFunction(0x0d, 0, {0,0,0}).at(0);
+    if(hasFeature(0x2400))
+        return dev->callFunction(getFeatureIndex(0x2400), 0, {0,0,0}).at(0);
+    return false;
 }
 
 void DeviceCommunicator::enableFusionEngine()
 {
-    dev->callFunction(0x0d, 1, {1,0,0});
+    if(hasFeature(0x2400))
+        dev->callFunction(getFeatureIndex(0x2400), 1, {1,0,0});
 }
 
 void DeviceCommunicator::disableFusionEngine()
 {
-    dev->callFunction(0x0d, 1, {0,0,0});
+    if(hasFeature(0x2400))
+        dev->callFunction(getFeatureIndex(0x2400), 1, {0,0,0});
 }
 
 bool DeviceCommunicator::isPendingModification()
@@ -244,15 +249,17 @@ void DeviceCommunicator::applySettings()
 
 void DeviceCommunicator::toggleDPILed()
 {
+    uint8_t function = getFeatureIndex(0x1300);
     if(isDPILedOn())
-        dev->callFunction(5, 7, {0,4,0});
+        dev->callFunction(function, 7, {0,4,0});
     else
-        dev->callFunction(5, 7, {0,2,0});
+        dev->callFunction(function, 7, {0,2,0});
 }
 
 bool DeviceCommunicator::isDPILedOn()
 {
-    std::vector<uint8_t> result = dev->callFunction(5, 6, {0,0,0});
+    uint8_t function = getFeatureIndex(0x1300);
+    std::vector<uint8_t> result = dev->callFunction(function, 6, {0,0,0});
     if(result.at(1) == 0x04) {
         return false;
     } else if(result.at(1) == 0x02) {
@@ -288,10 +295,11 @@ void DeviceCommunicator::setLogoGlow(quint16 value)
 
 void DeviceCommunicator::setBackLlight(quint16 intensity, quint16 rate)
 {
-    dev->callFunction(5, 3, {1,0,0});
-    dev->callFunction(5, 5, {1,0,0x80,0,(uint8_t)intensity,
+    uint8_t function = getFeatureIndex(0x1300);
+    dev->callFunction(function, 3, {1,0,0});
+    dev->callFunction(function, 5, {1,0,0x80,0,(uint8_t)intensity,
                             (uint8_t)(rate>>8),(uint8_t)(rate&0x00ff),0,0,0,0,0,0,0,0,0});
-    dev->callFunction(5, 3, {0,0,0});
+    dev->callFunction(function, 3, {0,0,0});
     saveSettings();
 }
 
@@ -355,4 +363,19 @@ bool DeviceCommunicator::isBreathingEnabled()
         return false;
     else
         return true;
+}
+
+uint8_t DeviceCommunicator::getFeatureIndex(uint16_t featureid)
+{
+    return HIDPP20Features[featureid];
+}
+
+bool DeviceCommunicator::hasFeature(uint16_t featureid)
+{
+    if(HIDPP20Features.find(featureid) == HIDPP20Features.end()) {
+        std::cout << "Feature " << featureid << " not compatible with this device." << std::endl;
+        return false;
+    } else {
+        return true;
+    }
 }
