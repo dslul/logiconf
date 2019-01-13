@@ -11,6 +11,7 @@ INSTRUCTIONS:
 ===================
 
 `wget https://raw.githubusercontent.com/dslul/logiconf/master/install.sh`
+
 `sh install.sh`
 
 Now download the binary from [here](https://github.com/dslul/logiconf/releases) (or compile it) and start the program!
