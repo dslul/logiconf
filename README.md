@@ -9,6 +9,9 @@ Currently, it is tested with the G402 Gaming Mouse, but it should also work with
 
 INSTRUCTIONS:
 ===================
+Dependencies:
+
+`sudo apt install qt5-default libqt5qml5 qml-module-qtquick-layouts qml-module-qtquick-controls2 qml-module-qtquick-controls`
 
 `wget https://raw.githubusercontent.com/dslul/logiconf/master/install.sh`
 
