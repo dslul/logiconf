@@ -11,11 +11,6 @@ RowLayout {
     signal valueChanged(int value)
     signal selectClicked
 
-    Label {
-        id: label
-        text: qsTr("Label")
-    }
-
     SpinBox {
         id: spinBox
         editable: true

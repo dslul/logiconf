@@ -7,7 +7,6 @@
 #include <hidpp20/IOnboardProfiles.h>
 #include <hidpp20/IAdjustableDPI.h>
 #include <hidpp20/ProfileFormat.h>
-#include <hidpp20/IFeatureSet.h>
 #include <hidpp/AbstractMemoryMapping.h>
 
 
@@ -29,6 +28,7 @@ public:
     Q_INVOKABLE int getMaxDPI();
     Q_INVOKABLE int getDPIStep();
     Q_INVOKABLE QList<int> getDPIList();
+    Q_INVOKABLE QList<int> getButtonsList();
     Q_INVOKABLE void setDPIIndex(int level);
     Q_INVOKABLE int getDPIIndex();
     Q_INVOKABLE int getcurrentDPI();
@@ -60,8 +60,7 @@ public:
 private:
     HIDPP20::Device *dev;
     HIDPP20::IOnboardProfiles *profiles;
-    HIDPP20::IFeatureSet *featureset;
-    HIDPP::Profile *hidprofile;
+    HIDPP::Profile *profile;
     HIDPP::Profile tmpprofile;
     HIDPP20::IAdjustableDPI *dpi;
     HIDPP20::ProfileFormat *profileformat;
@@ -74,7 +73,7 @@ private:
     quint16 breathingIntensity;
     quint16 breathingRate;
     quint16 oldBreathingRate;
-    QString savefilePath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + "/settings.json";
+    QString savefilePath;
 
 
     QString quint16toHexString(quint16 val, int bytenum);

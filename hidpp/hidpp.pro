@@ -2,11 +2,21 @@ TARGET = hidpp
 TEMPLATE = lib
 CONFIG += c++14 staticlib object_parallel_to_source
 
+win32 {
+SOURCES += hid/RawDevice_windows.cpp \
+        hid/DeviceMonitor_windows.cpp \
+        hid/windows/error_category.cpp \
+        hid/windows/DeviceData.cpp
+LIBS += -setupapi -lcfgmgr32 -lhid
+}
+
+unix {
+SOURCES += hid/RawDevice_linux.cpp \
+        hid/DeviceMonitor_linux.cpp
+}
 
 SOURCES += misc/Log.cpp \
-	misc/CRC.cpp \
-	hid/RawDevice_linux.cpp \
-	hid/DeviceMonitor_linux.cpp \
+        misc/CRC.cpp \
 	hid/UsageStrings.cpp \
 	hidpp/Dispatcher.cpp \
 	hidpp/SimpleDispatcher.cpp \
