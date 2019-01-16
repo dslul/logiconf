@@ -13,7 +13,9 @@ Dependencies:
 
 `sudo apt install qt5-default libqt5qml5 qml-module-qtquick-layouts qml-module-qtquick-controls2 qml-module-qtquick-controls`
 
-`wget https://raw.githubusercontent.com/dslul/logiconf/master/install.sh`
+`git clone https://github.com/dslul/logiconf`
+
+`cd logiconf`
 
 `sh install.sh`
 
