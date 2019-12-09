@@ -11,6 +11,6 @@ INSTRUCTIONS:
 ===================
 you must first add an udev rule, to be able to start the program without root permissions. Do the following command from a terminal:
 
-`echo "KERNEL==\"hidraw*\", ATTRS{idVendor}==\"046d\", MODE=\"0666\"" > /etc/udev/rules.d/99-hidraw-logitech.rules && sudo udevadm control --reload && sudo udevadm trigger`
+`echo "KERNEL==\"hidraw*\", ATTRS{idVendor}==\"046d\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/99-hidraw-logitech.rules && sudo udevadm control --reload && sudo udevadm trigger`
 
 Now download the AppImage binary from [here](https://github.com/dslul/logiconf/releases/download/0.2.1/logiconf-x86_64.AppImage) and start the program!
