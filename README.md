@@ -9,14 +9,8 @@ Currently, it is tested with the G402 Gaming Mouse, but it should also work with
 
 INSTRUCTIONS:
 ===================
-Dependencies:
+you must first add an udev rule, to be able to start the program without root permissions. Do the following command from a terminal:
 
-`sudo apt install qt5-default libqt5qml5 qml-module-qtquick-layouts qml-module-qtquick-controls2 qml-module-qtquick-controls`
+`echo "KERNEL==\"hidraw*\", ATTRS{idVendor}==\"046d\", MODE=\"0666\"" > /etc/udev/rules.d/99-hidraw-logitech.rules && sudo udevadm control --reload && sudo udevadm trigger`
 
-`git clone https://github.com/dslul/logiconf`
-
-`cd logiconf`
-
-`sh install.sh`
-
-Now download the binary from [here](https://github.com/dslul/logiconf/releases) (or compile it) and start the program!
+Now download the AppImage binary from [here](https://github.com/dslul/logiconf/releases/download/0.2.1/logiconf-x86_64.AppImage) and start the program!
